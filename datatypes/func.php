@@ -84,8 +84,29 @@ function getGenderFromName($str) {
     else return 'Не определен'; 
 }
 
-function getGenderDescription() {
-
+function getGenderDescription($arr) {
+    foreach ($arr as $person) {
+        $gender = getGenderFromName($person['fullname']);
+        array_push($genders, $gender);
+    }
+    $men = array_filter($genders, function ($gender) {
+        return $gender === 'Мужской';
+    });
+    $women = array_filter($genders, function ($gender) {
+        return $gender === 'Женский';
+    });
+    $nAGender = array_filter($genders, function ($gender) {
+        return $gender === 'Не определен';
+    });
+    $menPersent = count($men)/count($genders)*100;
+    $womenPersent = count($women)/count($genders)*100;
+    $nAGenderPersent = count($nAGender)/count($genders)*100;
+    $genderDesc = [
+        'Мужчины' => $menPersent,
+        'Женщины' => $womenPersent,
+        'Неопределенный' => $nAGenderPersent,
+    ];
+    return $genderDesc;
 }
 
 function getPerfectPartner() {

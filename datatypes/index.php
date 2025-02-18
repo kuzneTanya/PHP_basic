@@ -152,8 +152,15 @@
     <div class="gender_Stat">
         <h3 id="genderStatstart" data-bs-toggle="#genderstat" role="button" aria-expanded="false">Гендерный состав аудитории</h3>
         <div class="collapse" id="genderstat">
-            <div class="genStatText">
-                
+            <div class="genStatText bg-dark">
+                <?php
+                $genderStat = getGenderDescription($example_persons_array);
+                echo '<p>';
+                echo 'Мужчины – '.$genderStat['Мужчины'].'%';
+                echo 'Женщины – '.$genderStat['Женщины'].'%';
+                echo 'Не удалось определить – '.$genderStat['Неопределенный'].'%';
+                echo '</p>';
+                ?>
             </div>
         </div>
     </div>
