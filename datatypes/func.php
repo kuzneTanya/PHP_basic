@@ -85,6 +85,7 @@ function getGenderFromName($str) {
 }
 
 function getGenderDescription($arr) {
+    $genders = [];
     foreach ($arr as $person) {
         $gender = getGenderFromName($person['fullname']);
         array_push($genders, $gender);
@@ -98,9 +99,9 @@ function getGenderDescription($arr) {
     $nAGender = array_filter($genders, function ($gender) {
         return $gender === 'Не определен';
     });
-    $menPersent = count($men)/count($genders)*100;
-    $womenPersent = count($women)/count($genders)*100;
-    $nAGenderPersent = count($nAGender)/count($genders)*100;
+    $menPersent = round(count($men)/count($genders)*100, 1);
+    $womenPersent = round(count($women)/count($genders)*100, 1);
+    $nAGenderPersent = round(count($nAGender)/count($genders)*100, 1);
     $genderDesc = [
         'Мужчины' => $menPersent,
         'Женщины' => $womenPersent,
@@ -109,6 +110,15 @@ function getGenderDescription($arr) {
     return $genderDesc;
 }
 
-function getPerfectPartner() {
-
+function getPerfectPartner($surname, $name, $patronomyc, $arr) {
+    $sur = mb_strtolower($surname);
+    $n = mb_strtolower($name);
+    $patro = mb_strtolower($patronomyc);
+    $fullname = getFullnameFromParts([$sur, $n, $patro]);
+    $gender1 = getGenderFromName($fullname);
+    do {
+        $person = $arr[array_rand($arr, 1)];
+        $gender2 = getGenderFromName($person['fullname']);
+    } while ($gender1 == $gender2);
+    return $person['fullname'];
 }

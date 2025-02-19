@@ -152,14 +152,36 @@
     <div class="gender_Stat">
         <h3 id="genderStatstart" data-bs-toggle="#genderstat" role="button" aria-expanded="false">Гендерный состав аудитории</h3>
         <div class="collapse" id="genderstat">
-            <div class="genStatText bg-dark">
+            <div class="genStatText text-bg-secondary">
                 <?php
                 $genderStat = getGenderDescription($example_persons_array);
                 echo '<p>';
-                echo 'Мужчины – '.$genderStat['Мужчины'].'%';
-                echo 'Женщины – '.$genderStat['Женщины'].'%';
-                echo 'Не удалось определить – '.$genderStat['Неопределенный'].'%';
+                echo 'Мужчины – '.$genderStat['Мужчины'].'% <br/>';
+                echo 'Женщины – '.$genderStat['Женщины'].'% <br/>';
+                echo 'Не удалось определить – '.$genderStat['Неопределенный'].'% <br/>';
                 echo '</p>';
+                ?>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="love_Meter">
+        <h3 id="loveMeterstart" data-bs-toggle="#loveMeter" role="button" aria-expanded="false">Подбор пары</h3>
+        <div class="collapse" id="loveMeter">
+            <div class="text-bg-success" id="loveMeterOutput">
+                <?php
+                    $names = [];
+                    foreach ($example_persons_array as $person) {
+                        array_push($names, $person['fullname']);
+                    }
+                    $firstPerson = getPartsFromFullname($names[array_rand($names, 1)]);
+                    $secondPerson = getPerfectPartner($firstPerson['surname'], $firstPerson['name'], $firstPerson['patronomyc'], $example_persons_array);
+                    echo '<span>';
+                    echo getShortName(implode(' ', $firstPerson)).' + '.getShortName($secondPerson);
+                    echo '</span>';
+                    echo '<p> &#9829; Идеально на '.(rand(5000, 10000)/100).'%! &#9829;';
                 ?>
             </div>
         </div>

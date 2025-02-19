@@ -1,31 +1,25 @@
-document.querySelector('#partstart').addEventListener('click', () => {
-    if (document.querySelector('#parttable').className === 'collapse')    
-        document.querySelector('#parttable').classList.add('show');
-    else document.querySelector('#parttable').className = 'collapse';
+document.querySelector('#partstart').addEventListener('click', () => {  
+    document.querySelector('#parttable').classList.toggle('show');
 })
 
-document.querySelector('#mergestart').addEventListener('click', () => {
-    if (document.querySelector('#mergetable').className === 'collapse')    
-        document.querySelector('#mergetable').classList.add('show');
-    else document.querySelector('#mergetable').className = 'collapse';
+document.querySelector('#mergestart').addEventListener('click', () => {  
+    document.querySelector('#mergetable').classList.toggle('show');
 })
 
 document.querySelector('#shortstart').addEventListener('click', () => {
-    if (document.querySelector('#shorttable').className === 'collapse')    
-        document.querySelector('#shorttable').classList.add('show');
-    else document.querySelector('#shorttable').className = 'collapse';
+    document.querySelector('#shorttable').classList.toggle('show');
 })
 
 document.querySelector('#genderstart').addEventListener('click', () => {
-    if (document.querySelector('#gendertable').className === 'collapse')    
-        document.querySelector('#gendertable').classList.add('show');
-    else document.querySelector('#gendertable').className = 'collapse';
+    document.querySelector('#gendertable').classList.toggle('show');
 })
 
 document.querySelector('#genderStatstart').addEventListener('click', () => {
-    if (document.querySelector('#genderstat').className === 'collapse')    
-        document.querySelector('#genderstat').classList.add('show');
-    else document.querySelector('#genderstat').className = 'collapse';
+    document.querySelector('#genderstat').classList.toggle('show');
+})
+
+document.querySelector('#loveMeterstart').addEventListener('click', () => {
+    document.querySelector('#loveMeter').classList.toggle('show');
 })
 
 // document.querySelector('#divName').addEventListener('click', () => {
