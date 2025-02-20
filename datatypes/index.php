@@ -85,7 +85,7 @@
                 <tbody>
                 <?php 
                 foreach ($div_persons_array as $person) {
-                    $fullname = getFullnameFromParts($person['fullname']);
+                    $fullname = getFullnameFromParts($person['fullname']['surname'], $person['fullname']['name'], $person['fullname']['patronomyc']);
                     echo '<tr>';
                     echo '<td>'.$fullname.'</td>';
                     echo '<td>'.$person['job'].'</td>';
@@ -136,7 +136,10 @@
                 <tbody>
                 <?php 
                 foreach ($example_persons_array as $person) {
-                    $gender = getGenderFromName($person['fullname']);
+                    $genderNum = getGenderFromName($person['fullname']);
+                    if ($genderNum === 1) $gender = 'Женский'; 
+                    else if ($genderNum === -1) $gender = 'Мужской';
+                    else $gender = 'Не определен'; 
                     echo '<tr>';
                     echo '<td>'.$person['fullname'].'</td>';
                     echo '<td>'.$person['job'].'</td>';
@@ -155,11 +158,7 @@
             <div class="genStatText text-bg-secondary">
                 <?php
                 $genderStat = getGenderDescription($example_persons_array);
-                echo '<p>';
-                echo 'Мужчины – '.$genderStat['Мужчины'].'% <br/>';
-                echo 'Женщины – '.$genderStat['Женщины'].'% <br/>';
-                echo 'Не удалось определить – '.$genderStat['Неопределенный'].'% <br/>';
-                echo '</p>';
+                echo $genderStat;
                 ?>
             </div>
         </div>
@@ -176,12 +175,11 @@
                     foreach ($example_persons_array as $person) {
                         array_push($names, $person['fullname']);
                     }
-                    $firstPerson = getPartsFromFullname($names[array_rand($names, 1)]);
-                    $secondPerson = getPerfectPartner($firstPerson['surname'], $firstPerson['name'], $firstPerson['patronomyc'], $example_persons_array);
-                    echo '<span>';
-                    echo getShortName(implode(' ', $firstPerson)).' + '.getShortName($secondPerson);
-                    echo '</span>';
-                    echo '<p> &#9829; Идеально на '.(rand(5000, 10000)/100).'%! &#9829;';
+                    do {
+                        $firstPerson = getPartsFromFullname($names[array_rand($names, 1)]);
+                    } while (getGenderFromName(implode(' ', $firstPerson)) == 0);
+                    $loveResult = getPerfectPartner($firstPerson['surname'], $firstPerson['name'], $firstPerson['patronomyc'], $example_persons_array);
+                    echo $loveResult;
                 ?>
             </div>
         </div>

@@ -46,7 +46,7 @@ $example_persons_array = [
     ],
 ];
 
-function getPartsFromFullname($str) {
+function getPartsFromFullname(string $str) {
     $arr = explode(' ', $str);
     return [
         'surname' => $arr[0],
@@ -55,16 +55,16 @@ function getPartsFromFullname($str) {
     ];
 }
 
-function getFullnameFromParts($arr) {
-    return implode(' ', $arr);
+function getFullnameFromParts(string $surname, string $name, string $patronomyc) {
+    return $surname.' '.$name.' '.$patronomyc;
 }
 
-function getShortName($str) {
+function getShortName(string $str) {
     $fullname = getPartsFromFullname($str);
     return $fullname['name']." ".mb_convert_case(mb_substr($fullname['surname'], 0, 1), 0).".";
 }
 
-function getGenderFromName($str) {
+function getGenderFromName(string $str) {
     $fullname = getPartsFromFullname($str);
     $gender = 0;
     if (mb_substr($fullname['surname'], -2, 2) == 'ва')
@@ -79,46 +79,58 @@ function getGenderFromName($str) {
         $gender++;
     else if (mb_substr($fullname['patronomyc'], -2, 2) == 'ич')
         $gender--;
-    if (($gender <=> 0) === 1) return 'Женский'; 
-    else if (($gender <=> 0) === -1) return 'Мужской'; 
-    else return 'Не определен'; 
+    return $gender <=> 0; 
 }
 
-function getGenderDescription($arr) {
+function getGenderDescription(array $arr) {
     $genders = [];
     foreach ($arr as $person) {
         $gender = getGenderFromName($person['fullname']);
         array_push($genders, $gender);
     }
     $men = array_filter($genders, function ($gender) {
-        return $gender === 'Мужской';
+        return $gender === -1;
     });
     $women = array_filter($genders, function ($gender) {
-        return $gender === 'Женский';
+        return $gender === 1;
     });
     $nAGender = array_filter($genders, function ($gender) {
-        return $gender === 'Не определен';
+        return $gender === 0;
     });
     $menPersent = round(count($men)/count($genders)*100, 1);
     $womenPersent = round(count($women)/count($genders)*100, 1);
     $nAGenderPersent = round(count($nAGender)/count($genders)*100, 1);
-    $genderDesc = [
-        'Мужчины' => $menPersent,
-        'Женщины' => $womenPersent,
-        'Неопределенный' => $nAGenderPersent,
-    ];
+    $genderDesc = <<<GENDERTEXT
+                    <p>Гендерный состав аудитории: <hr style="border: none; border-top: 2px dashed #FFF;" /></p>
+                    <p>Мужчины - $menPersent%</p>
+                    <p>Женщины - $womenPersent%</p>
+                    <p>Не удалось определить - $nAGenderPersent%</p>
+                    GENDERTEXT;
     return $genderDesc;
 }
 
-function getPerfectPartner($surname, $name, $patronomyc, $arr) {
-    $sur = mb_strtolower($surname);
-    $n = mb_strtolower($name);
-    $patro = mb_strtolower($patronomyc);
-    $fullname = getFullnameFromParts([$sur, $n, $patro]);
+function getPerfectPartner(string $surname, string $name, string $patronomyc, array $arr) {
+    $sur = mb_strtoupper(mb_substr($surname, 0, 1)).mb_strtolower(mb_substr($surname, 1));
+    $n = mb_strtoupper(mb_substr($name, 0, 1)).mb_strtolower(mb_substr($name, 1));
+    $patro = mb_strtoupper(mb_substr($patronomyc, 0, 1)).mb_strtolower(mb_substr($patronomyc, 1));
+    $fullname = getFullnameFromParts($sur, $n, $patro);
     $gender1 = getGenderFromName($fullname);
-    do {
-        $person = $arr[array_rand($arr, 1)];
-        $gender2 = getGenderFromName($person['fullname']);
-    } while ($gender1 == $gender2);
-    return $person['fullname'];
+    if ($gender1 == 1) {
+        do {
+            $person = $arr[array_rand($arr, 1)];
+            $gender2 = getGenderFromName($person['fullname']);
+        } while ($gender2 !== -1);
+    } else {
+        do {
+            $person = $arr[array_rand($arr, 1)];
+            $gender2 = getGenderFromName($person['fullname']);
+        } while ($gender2 !== 1);
+    }
+    $firstperson = getShortName($fullname);
+    $secondperson = getShortName($person['fullname']);
+    $lovepercent = rand(5000, 10000)/100;
+    $result = <<<LOVEMETERTEXT
+                $firstperson + $secondperson = &#9829; Идеально на $lovepercent%! &#9829;
+                LOVEMETERTEXT;
+    return $result;
 }
